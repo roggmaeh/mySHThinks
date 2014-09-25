@@ -60,9 +60,5 @@ function GetJSONfrommySQL($mySQLresult){
 	return json_encode($table);
 }
 
-$con=mysql_connect("localhost","root","admin") or die("Failed to connect with database!!!!");
-mysql_select_db("strom", $con);
-$result = mysql_query("SELECT timestamp, active_power as Watt FROM stromzaehler WHERE timestamp > SUBTIME(NOW(), '1 0:0:0')");
- 
-echo GetJSONfrommySQL($result);
+// echo GetJSONfrommySQL($result);
 ?>

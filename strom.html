@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+ 
+    <!--Load the Ajax API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+ 
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1', {'packages':['corechart']});
+ 
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.setOnLoadCallback(drawChart);
+ 
+    function drawChart() {
+		var jsonData = $.ajax({
+                url: "strom.php",
+                dataType: "json",
+                async: false
+            }).responseText;
+		// Create our data table out of JSON data loaded from server.
+		var data = new google.visualization.DataTable(jsonData);
+		var options = {
+			title: ' Strom ',
+			height: 600,
+			explorer: { actions: ['dragToZoom', 'rightClickToReset'], axis: 'horizontal' } 
+		};
+		// Instantiate and draw our chart, passing in some options.
+		// Do not forget to check your div ID
+		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+		chart.draw(data, options);
+		}
+		
+	$(function() {
+		$( "#datepicker" ).datepicker({
+		dateFormat: "yy-mm-dd",
+		changeMonth: true,
+		changeYear: true,
+		firstDay: 1,
+		showOn: "button",
+		buttonImage: "calendar.gif",
+		buttonImageOnly: true,
+		buttonText: "Select date"});
+	});
+	
+	function getPowerByDatepicker() {
+		var date = $("#datepicker").val();
+		var dataString = 'date='+ date;
+		
+		var jsonData = $.ajax({
+			type: "POST",
+			url: "strom.php",
+			data: dataString,
+			cache: false,
+			async: false
+		}).responseText;
+		var data = new google.visualization.DataTable(jsonData);
+		var options = {
+			title: ' Strom ',
+			height: 600,
+			explorer: { actions: ['dragToZoom', 'rightClickToReset'], axis: 'horizontal' } 
+		};
+		// Instantiate and draw our chart, passing in some options.
+		// Do not forget to check your div ID
+		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+		chart.draw(data, options);
+	}
+    </script>
+  </head>
+ 
+  <body>
+	<p>Date: <input type="text" id="datepicker" onchange="getPowerByDatepicker()"></p>
+    <!--this is the div that will hold the pie chart-->
+    <div id="chart_div"></div>
+  </body>
+</html>
